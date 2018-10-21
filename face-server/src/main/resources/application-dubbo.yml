@@ -1,0 +1,34 @@
+spring:
+#dubbo配置
+  dubbo:
+    #提供方应用信息，用于计算依赖关系
+    application:
+      name: mogu-face-soa
+      owner: mogu
+    #连接注册中心配置
+    registry:
+      address: zookeeper://zk1.2dfire-daily.com:2181?backup=zk2.2dfire-daily.com,zk3.2dfire-daily.com:2181
+      protocol: zookeeper
+      check: false
+    #用dubbo协议在x端口暴露服务
+    protocol:
+      name: dubbo
+      port: -1
+      threads: 200
+      dispatcher: message
+    #不检测消费者
+    consumer:
+      check: false
+      timeout: 3000
+    #服务提供日志监控
+    provider:
+      retries: 0
+      delay: -1
+      timeout: 3000
+      cluster: failfast
+      loadbalance: leastactive
+
+### 公共环境
+---
+spring:
+  profiles: daily

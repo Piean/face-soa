@@ -11,7 +11,7 @@
         </layout>
     </appender>
 
-    <appender name="DATA-SHOP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FACE-SOA" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.dir}/logs.log</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -24,12 +24,12 @@
         </layout>
     </appender>
 
-    <logger name="data_shop" level="${log.level}" additivity="false">
-        <appender-ref ref="DATA-SHOP"/>
+    <logger name="com.mogu.demo" level="${log.level}" additivity="false">
+        <appender-ref ref="FACE-SOA"/>
     </logger>
 
     <root>
         <level value="${log.other.level}"/>
-        <appender-ref ref="DATA-SHOP"/>
+        <appender-ref ref="FACE-SOA"/>
     </root>
 </configuration>

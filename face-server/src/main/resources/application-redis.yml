@@ -1,0 +1,18 @@
+spring:
+  redis:
+    name: mogu-face-redis
+    sentinel:
+      nodes: common101.redis.2dfire-daily.com:26379
+      master: cache101
+    database: 2
+    pool:
+      max-idle: 20
+      min-idle: 20
+      test-on-borrow: true
+      time-between-eviction-runs-millis: 60000
+
+
+### 公共环境
+---
+spring:
+  profiles: daily
