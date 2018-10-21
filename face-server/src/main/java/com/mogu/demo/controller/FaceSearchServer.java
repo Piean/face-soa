@@ -2,8 +2,8 @@ package com.mogu.demo.controller;
 
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
+import javax.websocket.OnClose;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Map;
@@ -25,6 +25,7 @@ public class FaceSearchServer {
     public void onOpen(Session session) {
         this.session = session;
         client.put(session.getId(), this);
+        System.out.println("One clint connected, id is" + session.getId());
     }
 
     @OnClose
