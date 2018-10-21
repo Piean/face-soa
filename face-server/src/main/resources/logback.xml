@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="false" debug="false">
+    <property name="BASE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{32} %M:%L %msg%n"/>
+    <jmxConfigurator />
+    <timestamp key="byDay" datePattern="yyyy-MM-dd" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date %level %10logger [%file:%line] %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="DATA-SHOP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/bak/business_debug.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${BASE_PATTERN}</pattern>
+            <!--<immediateFlush>false</immediateFlush>-->
+        </layout>
+    </appender>
+
+    <logger name="data_shop" level="${log.level}" additivity="false">
+        <appender-ref ref="DATA-SHOP"/>
+    </logger>
+
+    <root>
+        <level value="${log.other.level}"/>
+        <appender-ref ref="DATA-SHOP"/>
+    </root>
+</configuration>

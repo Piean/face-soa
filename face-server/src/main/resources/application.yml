@@ -1,0 +1,192 @@
+spring:
+  datasource:
+    name: default
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://common101.my.2dfire-daily.com:3306/state?statementInterceptors=com.dfire.magiceye.mysql.TracingStatementInterceptor&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true
+    username: order
+    password: order@552208
+    driver-class-name: com.mysql.jdbc.Driver
+
+    druid:
+      initial-size: 20
+      min-idle: 20
+      max-active: 50        #最大连接池数量
+      max-wait: 5000 #获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
+      validation-query: select 1                #用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。
+      validation-query-timeout: 1                #单位：秒，检测连接是否有效的超时时间。底层调用jdbc Statement对象的void setQueryTimeout(int seconds)方法
+      test-on-borrow:        false        #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return:        false        #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-while-idle:        true        #建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      time-between-eviction-runs-millis: 60000        #1分钟（1.0.14）        有两个含义：
+      #1) Destroy线程会检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接 2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
+      min-evictable-idle-time-millis:  300000      #5分钟（1.0.14）        连接保持空闲而不被驱逐的最长时间
+      filters:    stat,slf4j          #监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall
+      clear-filters-enable: false   #属性类型是字符串，通过别名的方式配置扩展插件
+      remove-abandoned: true
+      remove-abandoned-timeout: 1800
+      log-abandoned: true
+      connection-init-sqls: set names utf8mb4;
+
+  druid:
+    servlet:
+      urlMappings:
+      - /druid/*
+    filter:
+      urlPatterns:
+      - /*
+      initParameters:
+      - exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,*.swf,/druid/*"
+      - profileEnable: true
+      - sessionStatEnable: true
+      - sessionStatMaxCount: 10010240
+      - createSession: false
+  dubbo:
+    application:
+      name: data-shop-soa
+      owner: mogu
+    registry:
+      address: zookeeper://zk1.2dfire-daily.com:2181?backup=zk2.2dfire-daily.com:2181,zk3.2dfire-daily.com:2181
+    protocol:
+      name: dubbo
+      port: -1
+      accesslog: /opt/logs/spring-boot/access.log
+    monitor:
+      protocol: registry
+    provider:
+      retries: 0
+      delay: -1
+      loadbalance: leastactive
+      filter: datFilter
+    consumer:
+      filter: datFilter
+      timeout: 5000
+      check: false
+    service:
+      shutdown:
+        wait:  10000
+
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+  redis:
+    name: data-shop-redis
+    sentinel:
+      nodes:  common101.redis.2dfire-daily.com:26379
+      master: cache101
+    database: 2
+    pool:
+      max-idle: 20
+      min-idle: 20
+      max-active: 200
+      max-wait: 500
+      test-on-borrow: true
+      time-between-eviction-runs-millis: 60000
+
+  aop:
+    auto:  true
+    proxy-target-class:  false
+
+  monitor:
+    path: /state-soa
+logging:
+  config: classpath:logback.xml
+  path: /opt/logs/spring-boot
+  level:
+    root: WARN
+    com.dfire.soa.cashstate: WARN
+mybatis:
+  mapper-locations: "classpath*:/mapper/*Mapper.xml"
+  typeAliasesPackage: com.dfire.soa.cashstate.mapper;com.dfire.soa.cashclear.mapper;com.dfire.soa.userconfig.mapper
+
+---
+spring:
+  profiles:
+    active: dev
+logging:
+  level:
+    root: WARN
+    com.dfire.soa.cashstate: WARN
+
+---
+spring:
+  profiles: daily
+logging:
+  level:
+    root: INFO
+    com.dfire.soa.cashstate: DEBUG
+---
+spring:
+  profiles: press
+  datasource:
+    name: state
+    url: jdbc:mysql://mysql101.pressuretest.2dfire-daily.com:3306/state?statementInterceptors=com.dfire.magiceye.mysql.TracingStatementInterceptor&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true&amp;allowMultiQueries=true&amp;failOverReadOnly=false
+    username: test
+    password: test@123
+  dubbo:
+    registry:
+      address: zookeeper://zk01.pressuretest.2dfire-inc.com:2181
+  redis:
+    sentinel:
+      nodes: sentinel101.pressuretest.2dfire-daily.com:26379
+      master: cache101
+    database: 2
+logging:
+  level:
+    root: WARN
+    com.dfire.soa.cashstate: WARN
+
+---
+spring:
+  profiles: pre
+
+  datasource:
+    name: state
+    url: jdbc:mysql://rdsdb1701.my.2dfire-inc.com:3306/cash_state?statementInterceptors=com.dfire.magiceye.mysql.TracingStatementInterceptor&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true&amp;allowMultiQueries=true
+    username: cash_state
+    password: cash_state@552208
+  dubbo:
+    registry:
+      address: zookeeper://zk1.2dfire-inc.com:2181?backup=zk2.2dfire-inc.com:2181,zk3.2dfire-inc.com:2181
+  redis:
+    sentinel:
+      nodes: sentinel1.redis.2dfire-inc.com:26379,sentinel2.redis.2dfire-inc.com:26379,sentinel3.redis.2dfire-inc.com:26379,sentinel4.redis.2dfire-inc.com:26379,sentinel5.redis.2dfire-inc.com:26379
+      master: cash-state
+    database: 20
+
+logging:
+  level:
+    root: DEBUG
+    com.dfire.soa.cashstate: DEBUG
+
+dfire:
+  guid:
+    zkUrl: guidzk1.2dfire-inc.com:2181,guidzk2.2dfire-inc.com:2181,guidzk3.2dfire-inc.com:2181
+
+
+---
+spring:
+  profiles: publish
+
+  datasource:
+    name: state
+    url: jdbc:mysql://rdsdb1701.my.2dfire-inc.com:3306/cash_state?statementInterceptors=com.dfire.magiceye.mysql.TracingStatementInterceptor&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true&amp;allowMultiQueries=true
+    username: cash_state
+    password: cash_state@552208
+  dubbo:
+    registry:
+      address: zookeeper://zk1.2dfire-inc.com:2181?backup=zk2.2dfire-inc.com:2181,zk3.2dfire-inc.com:2181
+  redis:
+    sentinel:
+      nodes: sentinel1.redis.2dfire-inc.com:26379,sentinel2.redis.2dfire-inc.com:26379,sentinel3.redis.2dfire-inc.com:26379,sentinel4.redis.2dfire-inc.com:26379,sentinel5.redis.2dfire-inc.com:26379
+      master: cash-state
+    database: 20
+
+logging:
+  level:
+    root: ERROR
+    com.dfire.soa.cashstate: WARN
+
+dfire:
+  guid:
+    zkUrl: guidzk1.2dfire-inc.com:2181,guidzk2.2dfire-inc.com:2181,guidzk3.2dfire-inc.com:2181
