@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html LANG="zh">
+<body>
+<h1>Hello Word</h1>
+</body>
+<script type="text/javascript" src="https://cdn.bootcss.com/sockjs-client/1.3.0/sockjs.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.js"></script>
+<script type="text/javascript">
+    var url = 'http://127.0.0.1:8080/websocket';
+    var sock = new SockJS(url);
+    var stomp = Stomp.over(sock);
+    stomp.connect({}, function (data) {
+        stomp.subscribe('/face/search', function (response) {
+            alert("receive message is " + response);
+        });
+
+        var tx = stomp.begin();
+        stomp.send("/app/face", {transaction: tx.id}, JSON.stringify({entityId:'99240152',token:'T123456789'}));
+        tx.commit();
+    });
+</script>
+</html>

@@ -1,11 +1,11 @@
 package com.mogu.demo.controller;
 
-import org.springframework.stereotype.Component;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.stereotype.Controller;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,22 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * Date: 2018/10/19
  */
 
-@Component
-@ServerEndpoint("/face/search/{face_id}")
+@Controller
 public class FaceSearchServer {
     final private static Map<String, FaceSearchServer> client = new ConcurrentHashMap<>();
     private Session session;
 
-
-    @OnOpen
-    public void onOpen(Session session) {
-        this.session = session;
-        client.put(session.getId(), this);
-        System.out.println("One clint connected, id is" + session.getId());
+    @MessageMapping("/face")
+    @SendTo("/face/search")
+    public String subMessage(String entityId, String token) {
+        System.out.println(entityId + token);
+        return entityId + token;
     }
 
-    @OnClose
-    public void onClose() {
-        client.remove(this.session.getId());
+    @SubscribeMapping("/member/info")
+    public String sendMessage() {
+        return "hhhh";
     }
 }

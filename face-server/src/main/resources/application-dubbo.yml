@@ -27,8 +27,3 @@ spring:
       timeout: 3000
       cluster: failfast
       loadbalance: leastactive
-
-### 公共环境
----
-spring:
-  profiles: daily

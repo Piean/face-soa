@@ -10,9 +10,3 @@ spring:
       min-idle: 20
       test-on-borrow: true
       time-between-eviction-runs-millis: 60000
-
-
-### 公共环境
----
-spring:
-  profiles: daily

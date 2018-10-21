@@ -2,10 +2,10 @@ spring:
   datasource:
     name: default
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://common101.my.2dfire-daily.com:3306/mogu?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true
+    url: jdbc:mysql://common101.my.2dfire-daily.com:3306/mogu?useUnicode=true&characterEncoding=utf-8&autoReconnect=true
     username: order
     password: order@552208
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
     druid:
       initial-size: 20
@@ -26,9 +26,3 @@ spring:
       remove-abandoned-timeout: 1800
       log-abandoned: true
       connection-init-sqls: set names utf8mb4;
-
-
-### 公共环境
----
-spring:
-  profiles: daily
