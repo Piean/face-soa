@@ -2,8 +2,8 @@ package com.mogu.demo.controller;
 
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnOpen;
 import javax.websocket.OnClose;
+import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Map;
