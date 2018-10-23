@@ -59,7 +59,7 @@
         </if>
             op_time = unix_timestamp(now(3))*1000,
             last_ver = last_ver + 1
-        where id = #{id} and ${arriveTime} - arrive_time >= 2*60*60*1000 and is_valid = 1
+        where id = #{id} and ${arriveTime} - arrive_time >= 20 and is_valid = 1
     </update>
 
     <select id="getById" resultMap="baseResultMap" parameterType="java.lang.String">
