@@ -69,4 +69,12 @@ public class CountVo implements Serializable {
             womanNum++;
         }
     }
+
+    public synchronized void setCount(final CountVo count) {
+        this.sum = count.getSum();
+        this.manNum = count.getManNum();
+        this.womanNum = count.getWomanNum();
+        this.customerNum = count.getCustomerNum();
+        this.memberNum = count.getMemberNum();
+    }
 }

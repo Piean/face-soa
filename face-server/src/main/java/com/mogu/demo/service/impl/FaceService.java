@@ -26,10 +26,10 @@ public class FaceService implements IFaceService {
     }
 
     @Override
-    public Face getById(String memberId) {
-        if (StringUtils.isBlank(memberId)) {
+    public Face getById(String id) {
+        if (StringUtils.isBlank(id)) {
             return null;
         }
-        return faceMapper.getByMemberId(memberId);
+        return faceMapper.getById(id);
     }
 }

@@ -4,7 +4,7 @@
     <resultMap id="baseResultMap" type="com.mogu.demo.face.bo.Group">
         <result column="id" property="id"/>
         <result column="entity_id" property="entityId"/>
-        <result column="group_id" property="groupId"/>
+        <result column="group_name" property="groupName"/>
         <result column="op_time" property="opTime"/>
         <result column="create_time" property="createTime"/>
         <result column="last_ver" property="lastVer"/>
@@ -12,7 +12,7 @@
     </resultMap>
 
     <sql id="base_column">
-        id, entity_id, group_id, op_time, create_time, last_ver, is_valid
+        id, entity_id, group_name, op_time, create_time, last_ver, is_valid
     </sql>
 
     <insert id="insertGroup" parameterType="com.mogu.demo.face.bo.Group">
@@ -21,7 +21,7 @@
         ) values (
             #{id},
             #{entityId},
-            #{groupId},
+            #{groupName},
             unix_timestamp(now(3))*1000,
             unix_timestamp(now(3))*1000,
             0,

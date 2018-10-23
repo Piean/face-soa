@@ -2,7 +2,7 @@ package com.mogu.demo.face.bo.base;
 
 public class BaseGroup extends Base {
     private String entityId;
-    private String groupId;
+    private String groupName;
 
     public String getEntityId() {
         return entityId;
@@ -12,11 +12,11 @@ public class BaseGroup extends Base {
         this.entityId = entityId;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

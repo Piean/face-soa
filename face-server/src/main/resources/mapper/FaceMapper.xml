@@ -39,13 +39,15 @@
         )
     </insert>
 
-    <update id="" parameterType="com.mogu.demo.face.bo.Face">
-
-    </update>
-
     <select id="getById" resultMap="baseResultMap" parameterType="java.lang.String">
         select <include refid="base_column"/>
         from face
         where id = #{id} and is_valid = 1
+    </select>
+
+    <select id="countBySex" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(f.id)
+        from group as g, face as f
+        where g.entity_id = #{eid} and g.id = f.group_id and f.sex = #{sex}
     </select>
 </mapper>

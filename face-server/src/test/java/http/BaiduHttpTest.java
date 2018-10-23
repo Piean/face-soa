@@ -1,6 +1,7 @@
 package http;
 
 import com.mogu.demo.FaceServerApplication;
+import com.mogu.demo.api.face.ApiConstants;
 import com.mogu.demo.api.face.IFaceHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,7 @@ public class BaiduHttpTest {
 
     @Test
     public void createGroupTest() {
-        String group = faceHttpClient.getGroupId("MOGU_FACE_GROUP");
+        String group = faceHttpClient.getGroupId(ApiConstants.ENTITY_ID,"MOGU_FACE_GROUP");
         System.out.println(group);
     }
 }

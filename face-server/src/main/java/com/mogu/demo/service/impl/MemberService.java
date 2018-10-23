@@ -26,10 +26,18 @@ public class MemberService implements IMemberService {
     }
 
     @Override
-    public Member getById(String memberId) {
-        if (StringUtils.isBlank(memberId)) {
+    public Member getById(String id) {
+        if (StringUtils.isBlank(id)) {
             return null;
         }
-        return memberMapper.getByMemberId(memberId);
+        return memberMapper.getById(id);
+    }
+
+    @Override
+    public Member getByFaceId(String faceId) {
+        if (StringUtils.isBlank(faceId)) {
+            return null;
+        }
+        return memberMapper.getByFaceId(faceId);
     }
 }

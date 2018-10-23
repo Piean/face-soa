@@ -11,6 +11,7 @@ public class MemberVo implements Serializable {
     private static final long serialVersionUID = 110L;
 
     private String memberId;
+    private String faceCode;
     private int sex;
     private int age;
     private String name;
@@ -30,6 +31,14 @@ public class MemberVo implements Serializable {
 
     public void setMemberId(String memberId) {
         this.memberId = memberId;
+    }
+
+    public String getFaceCode() {
+        return faceCode;
+    }
+
+    public void setFaceCode(String faceCode) {
+        this.faceCode = faceCode;
     }
 
     public String getSex() {

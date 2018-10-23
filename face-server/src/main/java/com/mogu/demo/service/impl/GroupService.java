@@ -16,7 +16,7 @@ public class GroupService implements IGroupService {
 
     @Override
     public Group createGroup(Group group) {
-        if (StringUtils.isAnyBlank(group.getEntityId(),group.getGroupId())) {
+        if (StringUtils.isAnyBlank(group.getEntityId(),group.getGroupName())) {
             return null;
         }
         group.setId(StringUtil.getUUID());

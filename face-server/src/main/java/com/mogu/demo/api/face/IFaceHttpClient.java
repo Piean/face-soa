@@ -1,15 +1,21 @@
 package com.mogu.demo.api.face;
 
+import java.nio.file.Path;
+
 /**
  * Created by mogu
  * Date: 2018/10/22
  */
 public interface IFaceHttpClient {
-    <T> T detect(String base64Code);
+    <T> T detect(Path path);
 
-    <T> T addFace(String entityId, String memberId, String base64Code);
+    <T> T detect(String faceToken);
 
-    String getGroupId(String entityId);
+    <T> T addFace(String groupId, Path path, String bizId);
 
-    <T> T search(String faceToken, String groupId);
+    <T> T addFace(String groupId, String faceToken, String bizId);
+
+    String getGroupId(String entityId, String groupName);
+
+    <T> T search(String entityId, String faceToken);
 }
