@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mogu.demo.mapper.MemberMapper">
+    <resultMap id="baseResultMap" type="com.mogu.demo.face.bo.Member">
+        <result column="id" property="id"/>
+        <result column="member_id" property="memberId"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="member_type" property="memberType"/>
+        <result column="card_type" property="cardType"/>
+        <result column="card_remain" property="cardRemain"/>
+        <result column="arrive_time" property="arriveTime"/>
+        <result column="counter" property="counter"/>
+        <result column="op_time" property="opTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_ver" property="lastVer"/>
+        <result column="is_valid" property="isValid"/>
+    </resultMap>
+
+    <sql id="base_column">
+        id, member_id, name, phone, member_type, card_type, card_remain, arrive_time, counter, op_time, create_time, last_ver, is_valid
+    </sql>
+
+    <insert id="insertMember" parameterType="com.mogu.demo.face.bo.Member">
+        insert into member (
+            <include refid="base_column"/>
+        ) values (
+            #{id},
+            #{memberId},
+            #{name},
+            #{phone},
+            #{memberType},
+            #{cardType},
+            #{cardRemain},
+            #{arriveTime},
+            #{counter},
+            unix_timestamp(now(3))*1000,
+            unix_timestamp(now(3))*1000,
+            0,
+            1
+        )
+    </insert>
+
+    <update id="updateMember" parameterType="com.mogu.demo.face.bo.Member">
+
+    </update>
+
+    <select id="getByMemberId" resultMap="baseResultMap" parameterType="java.lang.String">
+        select <include refid="base_column"/>
+        from member
+        where member_id = #{memberId} and is_valid = 1
+    </select>
+</mapper>

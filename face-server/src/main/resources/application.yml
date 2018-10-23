@@ -14,3 +14,7 @@ logging:
   level: debug
   immediate:
     flush: true
+
+mybatis:
+  mapper-locations: "classpath*:/mapper/*Mapper.xml"
+  typeAliasesPackage: com.mogu.demo.mapper

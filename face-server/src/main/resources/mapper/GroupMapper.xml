@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mogu.demo.mapper.GroupMapper">
+    <resultMap id="baseResultMap" type="com.mogu.demo.face.bo.Group">
+        <result column="id" property="id"/>
+        <result column="entity_id" property="entityId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="op_time" property="opTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_ver" property="lastVer"/>
+        <result column="is_valid" property="isValid"/>
+    </resultMap>
+
+    <sql id="base_column">
+        id, entity_id, group_id, op_time, create_time, last_ver, is_valid
+    </sql>
+
+    <insert id="insertGroup" parameterType="com.mogu.demo.face.bo.Group">
+        insert into group (
+            <include refid="base_column"/>
+        ) values (
+            #{id},
+            #{entityId},
+            #{groupId},
+            unix_timestamp(now(3))*1000,
+            unix_timestamp(now(3))*1000,
+            0,
+            1
+        )
+    </insert>
+
+    <select id="getByEntityId" resultMap="baseResultMap" parameterType="java.lang.String">
+        select <include refid="base_column"/>
+        from group
+        where entity_id = #{entityId} and is_valid = 1
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mogu.demo.mapper.FaceMapper">
+    <resultMap id="baseResultMap" type="com.mogu.demo.face.bo.Face">
+        <result column="id" property="id"/>
+        <result column="member_id" property="memberId"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="face_token" property="faceToken"/>
+        <result column="face_url" property="faceUrl"/>
+        <result column="op_time" property="opTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_ver" property="lastVer"/>
+        <result column="is_valid" property="isValid"/>
+    </resultMap>
+
+    <sql id="base_column">
+        id, member_id, sex, age, face_token, face_url, op_time, create_time, last_ver, is_valid
+    </sql>
+
+    <insert id="insertFace" parameterType="com.mogu.demo.face.bo.Face">
+        insert into face (
+          <include refid="base_column"/>
+        ) values (
+          #{id},
+          #{memberId},
+          #{sex},
+          #{age},
+          #{faceToken},
+          #{faceUrl},
+          unix_timestamp(now(3))*1000,
+          unix_timestamp(now(3))*1000,
+          0,
+          1
+        )
+    </insert>
+
+    <update id="" parameterType="com.mogu.demo.face.bo.Face">
+
+    </update>
+
+    <select id="getByMemberId" resultMap="baseResultMap" parameterType="java.lang.String">
+        select <include refid="base_column"/>
+        from face
+        where member_id = #{memberId} and is_valid = 1
+    </select>
+</mapper>

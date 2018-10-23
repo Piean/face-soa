@@ -1,0 +1,4 @@
+spring:
+  bean:
+    id: handshakeIntercept
+    class: com.mogu.demo.intercept.HandshakeIntercept
