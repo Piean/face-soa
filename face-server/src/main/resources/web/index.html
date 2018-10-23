@@ -14,9 +14,16 @@
             alert("receive message is " + response);
         });
 
+        stomp.subscribe('/shop/info', function (response) {
+            alert("Shop info is " + response);
+        });
+
         var tx = stomp.begin();
-        stomp.send("/app/face", {transaction: tx.id}, JSON.stringify({entityId:'99240152',token:'T123456789'}));
+        stomp.send("/app/face", {transaction: tx.id}, '99936274');
         tx.commit();
+
+
+
     });
 </script>
 </html>

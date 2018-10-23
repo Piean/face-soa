@@ -23,6 +23,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.dfire.soa</groupId>
+            <artifactId>shop-client</artifactId>
+            <version>1.3.17</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.dfire.spring.boot</groupId>
             <artifactId>dfire-dubbo-spring-boot-starter</artifactId>
             <version>1.5.15.3</version>
