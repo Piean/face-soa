@@ -120,11 +120,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.49</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
-        </dependency>
     </dependencies>
 
 
@@ -167,6 +162,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.5.15.RELEASE</version>
             </plugin>
 
             <plugin>

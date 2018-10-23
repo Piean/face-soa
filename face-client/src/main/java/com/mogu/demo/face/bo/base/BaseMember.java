@@ -1,21 +1,19 @@
 package com.mogu.demo.face.bo.base;
 
 public class BaseMember extends Base {
-    private String memberId;
+    private String faceId;
     private String name;
     private String phone;
     private int memberType;
     private int cardType;
     private long cardRemain;
-    private long arriveTime;
-    private int counter;
 
-    public String getMemberId() {
-        return memberId;
+    public String getFaceId() {
+        return faceId;
     }
 
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
+    public void setFaceId(String faceId) {
+        this.faceId = faceId;
     }
 
     public String getName() {
@@ -56,21 +54,5 @@ public class BaseMember extends Base {
 
     public void setCardRemain(long cardRemain) {
         this.cardRemain = cardRemain;
-    }
-
-    public long getArriveTime() {
-        return arriveTime;
-    }
-
-    public void setArriveTime(long arriveTime) {
-        this.arriveTime = arriveTime;
-    }
-
-    public int getCounter() {
-        return counter;
-    }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
     }
 }

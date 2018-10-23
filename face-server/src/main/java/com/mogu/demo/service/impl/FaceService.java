@@ -16,7 +16,7 @@ public class FaceService implements IFaceService {
 
     @Override
     public Face insertFace(Face face) {
-        if (StringUtils.isAnyBlank(face.getMemberId(),face.getFaceToken())) {
+        if (StringUtils.isAnyBlank(face.getGroupId(),face.getFaceToken(),face.getFaceUrl())) {
             return null;
         }
         final String id = StringUtil.getUUID();
@@ -26,7 +26,7 @@ public class FaceService implements IFaceService {
     }
 
     @Override
-    public Face getByMemberId(String memberId) {
+    public Face getById(String memberId) {
         if (StringUtils.isBlank(memberId)) {
             return null;
         }

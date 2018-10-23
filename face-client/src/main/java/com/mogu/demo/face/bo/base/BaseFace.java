@@ -1,18 +1,20 @@
 package com.mogu.demo.face.bo.base;
 
 public class BaseFace extends Base {
-    private String memberId;
+    private String groupId;
     private int sex;
     private int age;
+    private long arriveTime;
+    private int counter;
     private String faceToken;
     private String faceUrl;
 
-    public String getMemberId() {
-        return memberId;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public int getSex() {
@@ -29,6 +31,22 @@ public class BaseFace extends Base {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public long getArriveTime() {
+        return arriveTime;
+    }
+
+    public void setArriveTime(long arriveTime) {
+        this.arriveTime = arriveTime;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
 
     public String getFaceToken() {

@@ -16,7 +16,7 @@ public class MemberService implements IMemberService {
 
     @Override
     public Member insertMember(Member member) {
-        if (StringUtils.isAnyBlank(member.getMemberId())) {
+        if (StringUtils.isAnyBlank(member.getFaceId())) {
             return null;
         }
 
@@ -26,7 +26,7 @@ public class MemberService implements IMemberService {
     }
 
     @Override
-    public Member getByMemberId(String memberId) {
+    public Member getById(String memberId) {
         if (StringUtils.isBlank(memberId)) {
             return null;
         }

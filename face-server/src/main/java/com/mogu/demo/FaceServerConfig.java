@@ -20,7 +20,7 @@ public class FaceServerConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/queue", "/topic", "/face", "/member", "/shop");
+        registry.enableSimpleBroker("/queue", "/topic", "/face", "/member", "/shop", "/customer");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
     }

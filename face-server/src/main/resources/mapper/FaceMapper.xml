@@ -3,9 +3,11 @@
 <mapper namespace="com.mogu.demo.mapper.FaceMapper">
     <resultMap id="baseResultMap" type="com.mogu.demo.face.bo.Face">
         <result column="id" property="id"/>
-        <result column="member_id" property="memberId"/>
+        <result column="group_id" property="groupId"/>
         <result column="sex" property="sex"/>
         <result column="age" property="age"/>
+        <result column="arrive_time" property="arriveTime"/>
+        <result column="counter" property="counter"/>
         <result column="face_token" property="faceToken"/>
         <result column="face_url" property="faceUrl"/>
         <result column="op_time" property="opTime"/>
@@ -15,7 +17,7 @@
     </resultMap>
 
     <sql id="base_column">
-        id, member_id, sex, age, face_token, face_url, op_time, create_time, last_ver, is_valid
+        id, group_id, sex, age, arrive_time, counter, face_token, face_url, op_time, create_time, last_ver, is_valid
     </sql>
 
     <insert id="insertFace" parameterType="com.mogu.demo.face.bo.Face">
@@ -23,9 +25,11 @@
           <include refid="base_column"/>
         ) values (
           #{id},
-          #{memberId},
+          #{groupId},
           #{sex},
           #{age},
+          #{arriveTime},
+          #{counter},
           #{faceToken},
           #{faceUrl},
           unix_timestamp(now(3))*1000,
@@ -39,9 +43,9 @@
 
     </update>
 
-    <select id="getByMemberId" resultMap="baseResultMap" parameterType="java.lang.String">
+    <select id="getById" resultMap="baseResultMap" parameterType="java.lang.String">
         select <include refid="base_column"/>
         from face
-        where member_id = #{memberId} and is_valid = 1
+        where id = #{id} and is_valid = 1
     </select>
 </mapper>

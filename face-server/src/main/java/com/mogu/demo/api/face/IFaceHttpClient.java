@@ -5,9 +5,11 @@ package com.mogu.demo.api.face;
  * Date: 2018/10/22
  */
 public interface IFaceHttpClient {
-    <T> T detect();
+    <T> T detect(String base64Code);
 
-    String createGroup(String groupName);
+    <T> T addFace(String entityId, String memberId, String base64Code);
+
+    String getGroupId(String entityId);
 
     <T> T search(String faceToken, String groupId);
 }

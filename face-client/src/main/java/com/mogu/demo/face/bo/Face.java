@@ -31,7 +31,7 @@ public class Face  extends BaseFace {
             this.name = name;
         }
 
-        public String getName(int id) {
+        public static String getName(int id) {
             for (Sex sex : Sex.values()) {
                 if (id == sex.id)
                     return sex.name;

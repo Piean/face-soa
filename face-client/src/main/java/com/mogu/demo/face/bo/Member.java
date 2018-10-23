@@ -32,7 +32,7 @@ public class Member extends BaseMember {
             this.name = name;
         }
 
-        public String getName(int id) {
+        public static String getName(int id) {
             for (MemberType member : MemberType.values()) {
                 if (id == member.id)
                     return member.name;
@@ -42,8 +42,8 @@ public class Member extends BaseMember {
     }
 
     public enum CardType {
-        SILVER(1,"银卡会员"),
-        GOLD(2,"金卡会员"),
+        SILVER(1,"VIP 银卡会员"),
+        GOLD(2,"VIP 金卡会员"),
         ;
         private int id;
         private String name;
@@ -69,7 +69,7 @@ public class Member extends BaseMember {
             this.name = name;
         }
 
-        public String getName(int id) {
+        public static String getName(int id) {
             for (CardType card : CardType.values()) {
                 if (id == card.id)
                     return card.name;

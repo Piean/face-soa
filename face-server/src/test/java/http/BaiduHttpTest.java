@@ -21,7 +21,7 @@ public class BaiduHttpTest {
 
     @Test
     public void createGroupTest() {
-        String group = faceHttpClient.createGroup("MOGU_FACE_GROUP");
+        String group = faceHttpClient.getGroupId("MOGU_FACE_GROUP");
         System.out.println(group);
     }
 }
