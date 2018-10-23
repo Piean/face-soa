@@ -22,7 +22,7 @@ public class BaiduHttpTest {
 
     @Test
     public void createGroupTest() {
-        String group = faceHttpClient.getGroupId(ApiConstants.ENTITY_ID,"MOGU_FACE_GROUP");
+        String group = faceHttpClient.getGroupId(ApiConstants.ENTITY_ID,"HACK_DEMO_FACE_GROUP");
         System.out.println(group);
     }
 }

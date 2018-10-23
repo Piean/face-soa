@@ -19,7 +19,9 @@ public class GroupService implements IGroupService {
         if (StringUtils.isAnyBlank(group.getEntityId(),group.getGroupName())) {
             return null;
         }
-        group.setId(StringUtil.getUUID());
+        if (StringUtils.isBlank(group.getId())) {
+            group.setId(StringUtil.getUUID());
+        }
         groupMapper.insertGroup(group);
         return group;
     }

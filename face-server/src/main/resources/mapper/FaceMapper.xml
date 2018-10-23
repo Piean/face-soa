@@ -39,6 +39,29 @@
         )
     </insert>
 
+    <update id="updateFace" parameterType="com.mogu.demo.face.bo.Face">
+        update face set
+        <if test="sex > 0">
+            sex = #{sex},
+        </if>
+        <if test="age > 0">
+            age = #{age},
+        </if>
+        <if test="arriveTime > 0">
+            arrive_time = #{arriveTime},
+        </if>
+            counter = counter + 1,
+        <if test="faceToken != null">
+            face_token = #{faceToken},
+        </if>
+        <if test="faceUrl != null">
+            face_url = #{faceUrl},
+        </if>
+            op_time = unix_timestamp(now(3))*1000,
+            last_ver = last_ver + 1
+        where id = #{id} and ${arriveTime} - arrive_time >= 2*60*60*1000 and is_valid = 1
+    </update>
+
     <select id="getById" resultMap="baseResultMap" parameterType="java.lang.String">
         select <include refid="base_column"/>
         from face
@@ -47,7 +70,7 @@
 
     <select id="countBySex" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(f.id)
-        from group as g, face as f
+        from `group` as g, face as f
         where g.entity_id = #{eid} and g.id = f.group_id and f.sex = #{sex}
     </select>
 </mapper>

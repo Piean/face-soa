@@ -99,7 +99,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
             try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
-                    return (String) JSONPath.read(result, "$.face_token");
+                    return (String) JSONPath.read(result, "$.result.face_token");
                 }
             }
         } catch (IOException e) {
@@ -124,7 +124,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
             try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
-                    return (String) JSONPath.read(result, "$.face_token");
+                    return (String) JSONPath.read(result, "$.result.face_token");
                 }
             }
         } catch (IOException e) {

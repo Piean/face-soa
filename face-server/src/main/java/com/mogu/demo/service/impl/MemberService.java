@@ -20,9 +20,19 @@ public class MemberService implements IMemberService {
             return null;
         }
 
-        member.setId(StringUtil.getUUID());
+        if (StringUtils.isBlank(member.getId())) {
+            member.setId(StringUtil.getUUID());
+        }
         memberMapper.insertMember(member);
         return member;
+    }
+
+    @Override
+    public boolean updateMember(Member member) {
+        if (StringUtils.isBlank(member.getId())) {
+            return false;
+        }
+        return memberMapper.updateMember(member) > 0;
     }
 
     @Override

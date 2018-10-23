@@ -8,5 +8,5 @@
         http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
     <dubbo:reference id="shopClientService" interface="com.dfire.soa.shop.service.IShopClientService" version="1.0.0"/>
-    
+    <dubbo:reference id="twodfireMemberService" interface="com.dfire.soa.member.service.ITwodfireMemberService" version="1.0.2"/>
 </beans>

@@ -64,19 +64,19 @@ public class FaceSearchServer {
     public ResultMap subMessage(String faceInfo) {
         System.out.println(faceInfo);
 
-        FaceDetectResult faceObject = JSON.parseObject(faceInfo, FaceDetectResult.class);
-        if (faceObject == null || CollectionUtil.isEmpty(faceObject.getFace_list())) {
-            return new ResultMap();
-        }
-
-        FaceDetectResult.FaceInfo face = faceObject.getFace_list().get(0);
-
-        MemberVo vo = this.searchAndAdd(ApiConstants.ENTITY_ID, face);
+//        FaceDetectResult faceObject = JSON.parseObject(faceInfo, FaceDetectResult.class);
+//        if (faceObject == null || CollectionUtil.isEmpty(faceObject.getFace_list())) {
+//            return new ResultMap();
+//        }
+//
+//        FaceDetectResult.FaceInfo face = faceObject.getFace_list().get(0);
+//
+//        MemberVo vo = this.searchAndAdd(ApiConstants.ENTITY_ID, face);
 
         //mok 完成返回vo即可
         MemberVo member = new MemberVo();
         member.setMemberId("123456");
-        member.setFaceCode("image:data//451181");
+        member.setFaceCode("asdasd");
         member.setSex(1);
         member.setAge(30);
         member.setName("王大锤");
@@ -104,38 +104,41 @@ public class FaceSearchServer {
         FaceSearchResult searchResult = faceHttpClient.search(entityId, faceInfo.getFace_token());
 
         final String groupId = groupService.getByEntityId(entityId).getId();
-        final String faceId = StringUtil.getUUID();
+        String faceId;
         String faceToken;
 
-        if (searchResult == null && CollectionUtil.isEmpty(searchResult.getUser_list())) {
-            //未入人脸库进行入口操作
-            faceToken = faceHttpClient.addFace(entityId, faceInfo.getFace_token(),faceId);
-        } else {
-            //已入库用当前的faceToken
-            faceToken = faceInfo.getFace_token();
-        }
-
         Face face = new Face();
-        face.setId(faceId);
         face.setGroupId(groupId);
         face.setSex(faceInfo.getGender().getType());
         face.setAge((int) Math.round(faceInfo.getAge()));
         face.setArriveTime(System.currentTimeMillis());
-        face.setFaceToken(faceToken);
         face.setFaceUrl(faceInfo.getBase64Code());
-        faceService.insertFace(face);
 
+        if (searchResult == null && CollectionUtil.isEmpty(searchResult.getUser_list())) {
+            //未入人脸库进行入口操作
+            faceId = StringUtil.getUUID();
+            faceToken = faceHttpClient.addFace(entityId, faceInfo.getFace_token(),faceId);
+
+            face.setId(faceId);
+            face.setFaceToken(faceToken);
+            faceService.insertFace(face);
+        } else {
+            //已入库用当前的faceToken
+            faceId = searchResult.getUser_list().get(0).getUser_id();
+            faceToken = faceInfo.getFace_token();
+
+            face.setId(faceId);
+            face.setFaceToken(faceToken);
+            faceService.updateFace(face);
+        }
 
         Member member;
         if (searchResult != null && CollectionUtil.isNotEmpty(searchResult.getUser_list())) {
             FaceSearchResult.User user = searchResult.getUser_list().get(0);
             member = memberService.getByFaceId(user.getUser_id());
-            // TODO: 2018/10/24 调用member的接口查会员信息更新
-
-            // TODO: 2018/10/24 查不到更新为复购顾客
             if (StringUtils.isBlank(member.getMemberId())) {
                 member.setMemberType(Member.MemberType.AGAIN.getId());
-                memberService.insertMember(member);
+                memberService.updateMember(member);
             }
         } else {
             member = new Member();
@@ -144,6 +147,9 @@ public class FaceSearchServer {
             member.setName("");
             member.setPhone("");
             member.setMemberType(Member.MemberType.FIRST.getId());
+            member.setTag("[]");
+            member.setLove("[]");
+            member.setHate("[]");
             memberService.insertMember(member);
         }
 

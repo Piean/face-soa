@@ -16,7 +16,7 @@
     </sql>
 
     <insert id="insertGroup" parameterType="com.mogu.demo.face.bo.Group">
-        insert into group (
+        insert into `group` (
             <include refid="base_column"/>
         ) values (
             #{id},
@@ -31,7 +31,7 @@
 
     <select id="getByEntityId" resultMap="baseResultMap" parameterType="java.lang.String">
         select <include refid="base_column"/>
-        from group
+        from `group`
         where entity_id = #{entityId} and is_valid = 1
     </select>
 </mapper>

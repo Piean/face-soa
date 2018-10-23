@@ -45,6 +45,40 @@
         )
     </insert>
 
+    <update id="updateMember" parameterType="com.mogu.demo.face.bo.Member">
+        update member set
+        <if test="memberId != null">
+            member_id = #{memberId},
+        </if>
+        <if test="name != null">
+            name = #{name},
+        </if>
+        <if test="phone != null">
+            phone = #{phone},
+        </if>
+        <if test="memberType > 0">
+            member_type = #{memberType},
+        </if>
+        <if test="cardType > 0">
+            card_type = #{cardType},
+        </if>
+        <if test="cardRemain > 0">
+            card_remain = #{cardRemain},
+        </if>
+        <if test="tag != null">
+            tag = #{tag},
+        </if>
+        <if test="love != null">
+            love = #{love},
+        </if>
+        <if test="hate != null">
+            hate = #{hate},
+        </if>
+            op_time = unix_timestamp(now(3))*1000,
+            last_ver = last_ver + 1
+        where id = #{id} and is_valid = 1
+    </update>
+
     <select id="getById" resultMap="baseResultMap" parameterType="java.lang.String">
         select <include refid="base_column"/>
         from member
@@ -59,7 +93,7 @@
 
     <select id="countByMemberType" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(m.id)
-        from group as g, face as f, member as m
+        from `group` as g, face as f, member as m
         where g.entity_id = #{eid} and g.id = f.group_id and f.id = m.face_id and m.member_type = #{type}
     </select>
 </mapper>

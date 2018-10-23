@@ -19,10 +19,19 @@ public class FaceService implements IFaceService {
         if (StringUtils.isAnyBlank(face.getGroupId(),face.getFaceToken(),face.getFaceUrl())) {
             return null;
         }
-        final String id = StringUtil.getUUID();
-        face.setId(id);
+        if (StringUtils.isBlank(face.getId())) {
+            face.setId(StringUtil.getUUID());
+        }
         faceMapper.insertFace(face);
         return face;
+    }
+
+    @Override
+    public boolean updateFace(Face face) {
+        if (StringUtils.isBlank(face.getId())) {
+            return false;
+        }
+        return faceMapper.updateFace(face) > 0;
     }
 
     @Override
