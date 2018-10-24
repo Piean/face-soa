@@ -19,6 +19,7 @@ public class ApiConstants {
 
     public static final String BAIDU_DETECT_FILED = "face_token,age,gender,beauty,face_probability";
     public static final String BAIDU_GRANT_TYPE = "client_credentials";
+    public static final String BAIDU_HIGH = "HIGH";
 
     public static final String BAIDU_APP_ID = "14475594";
     public static final String BAIDU_API_KEY = "kSsCbW1z6OSGpSF4rN0ElbmQ";

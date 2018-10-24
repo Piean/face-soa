@@ -1,6 +1,7 @@
 package com.mogu.demo.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.dfire.soa.shop.bo.Shop;
 import com.dfire.soa.shop.service.IShopClientService;
 import com.google.common.collect.Lists;
@@ -8,6 +9,7 @@ import com.mogu.demo.api.face.ApiConstants;
 import com.mogu.demo.api.face.IFaceHttpClient;
 import com.mogu.demo.baidu.http.FaceDetectResult;
 import com.mogu.demo.baidu.http.FaceSearchResult;
+import com.mogu.demo.baidu.http.HttpResult;
 import com.mogu.demo.face.bo.Face;
 import com.mogu.demo.face.bo.Member;
 import com.mogu.demo.face.result.ResultMap;
@@ -44,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class FaceSearchServer {
     private static final CountVo count = new CountVo();
+    private static volatile int number = 0;
 
     @Resource
     private IFaceHttpClient faceHttpClient;
@@ -62,40 +65,24 @@ public class FaceSearchServer {
     @MessageMapping("/face")
     @SendTo("/member/info")
     public ResultMap subMessage(String faceInfo) {
-        System.out.println(faceInfo);
+        System.out.println("info:"+ faceInfo);
 
-//        FaceDetectResult faceObject = JSON.parseObject(faceInfo, FaceDetectResult.class);
-//        if (faceObject == null || CollectionUtil.isEmpty(faceObject.getFace_list())) {
-//            return new ResultMap();
-//        }
-//
-//        FaceDetectResult.FaceInfo face = faceObject.getFace_list().get(0);
-//
-//        MemberVo vo = this.searchAndAdd(ApiConstants.ENTITY_ID, face);
+        HttpResult<FaceDetectResult> faceObject = JSON.parseObject(faceInfo, new TypeReference<HttpResult<FaceDetectResult>>(){});
+        if (faceObject == null || faceObject.getResult() == null || CollectionUtil.isEmpty(faceObject.getResult().getFace_list())) {
+            return new ResultMap();
+        } else {
+            FaceDetectResult.FaceInfo face = faceObject.getResult().getFace_list().get(0);
 
-        //mok 完成返回vo即可
-        MemberVo member = new MemberVo();
-        member.setMemberId("123456");
-        member.setFaceCode("asdasd");
-        member.setSex(1);
-        member.setAge(30);
-        member.setName("王大锤");
-        member.setPhone("15334860985");
-        member.setMemberType(3);
-        member.setCardType(2);
-        member.setCardRemain(50000);
-        member.setArriveTime(System.currentTimeMillis());
-        member.setCounter(994);
-        member.setTag(Lists.newArrayList("逗逼","演员","万万没想到"));
-        member.setLove(Lists.newArrayList("花花"));
-        member.setHate(Lists.newArrayList("大葱","大蒜"));
+            MemberVo vo = this.searchAndAdd(ApiConstants.ENTITY_ID, face);
 
-        return new ResultMap(member);
+            return new ResultMap(vo);
+        }
     }
 
-    @SubscribeMapping("/shop/login")
-    public String sendMessage(String entityId) {
-        return entityId;
+    @SubscribeMapping("/init")
+    public ResultMap sendMessage() {
+        count.setCount(statisticService.statistic(ApiConstants.ENTITY_ID));
+        return new ResultMap<>(count);
     }
 
     private synchronized MemberVo searchAndAdd(String entityId, FaceDetectResult.FaceInfo faceInfo) {
@@ -103,45 +90,31 @@ public class FaceSearchServer {
 
         final String groupId = groupService.getByEntityId(entityId).getId();
 
-        FaceSearchResult searchResult = faceHttpClient.search(groupId, faceInfo.getFace_token());
+        HttpResult<FaceSearchResult> searchResult = faceHttpClient.search(groupId, faceInfo.getFace_token());
 
         String faceId;
         String faceToken;
 
         Face face = new Face();
         face.setGroupId(groupId);
-        face.setSex(faceInfo.getGender().getType());
+        face.setSex(faceInfo.getGender() != null ? faceInfo.getGender().getType() : 0);
         face.setAge((int) Math.round(faceInfo.getAge()));
         face.setArriveTime(System.currentTimeMillis());
         face.setFaceUrl(faceInfo.getBase64Code());
 
-        if (searchResult == null && CollectionUtil.isEmpty(searchResult.getUser_list())) {
-            //未入人脸库进行入口操作
+        Member member;
+
+        boolean flag = false;
+
+        if (searchResult == null || searchResult.getResult() == null || CollectionUtil.isEmpty(searchResult.getResult().getUser_list())) {
+            //未入人脸库进行入库操作
             faceId = StringUtil.getUUID();
             faceToken = faceHttpClient.addFace(entityId, faceInfo.getFace_token(),faceId);
 
             face.setId(faceId);
             face.setFaceToken(faceToken);
             faceService.insertFace(face);
-        } else {
-            //已入库用当前的faceToken
-            faceId = searchResult.getUser_list().get(0).getUser_id();
-            faceToken = faceInfo.getFace_token();
 
-            face.setId(faceId);
-            face.setFaceToken(faceToken);
-            faceService.updateFace(face);
-        }
-
-        Member member;
-        if (searchResult != null && CollectionUtil.isNotEmpty(searchResult.getUser_list())) {
-            FaceSearchResult.User user = searchResult.getUser_list().get(0);
-            member = memberService.getByFaceId(user.getUser_id());
-            if (StringUtils.isBlank(member.getMemberId())) {
-                member.setMemberType(Member.MemberType.AGAIN.getId());
-                memberService.updateMember(member);
-            }
-        } else {
             member = new Member();
             member.setId(StringUtil.getUUID());
             member.setMemberId("");
@@ -152,8 +125,23 @@ public class FaceSearchServer {
             member.setLove("[]");
             member.setHate("[]");
             memberService.insertMember(member);
+            flag = true;
+        } else {
+            //已入库用当前的faceToken
+            faceId = searchResult.getResult().getUser_list().get(0).getUser_id();
+            faceToken = faceInfo.getFace_token();
+            face.setId(faceId);
+            face.setFaceToken(faceToken);
+            flag = faceService.updateFace(face);
+
+            member = memberService.getByFaceId(faceId);
+            if (StringUtils.isBlank(member.getMemberId())) {
+                member.setMemberType(Member.MemberType.AGAIN.getId());
+                memberService.updateMember(member);
+            }
         }
 
+        vo.setId(member.getId());
         vo.setMemberId(member.getMemberId());
         vo.setFaceCode(face.getFaceUrl());
         vo.setSex(face.getSex());
@@ -165,11 +153,15 @@ public class FaceSearchServer {
         vo.setCardRemain(member.getCardRemain());
         vo.setArriveTime(face.getArriveTime());
         vo.setCounter(face.getCounter());
-        vo.setTag(Lists.newArrayList("逗逼","演员","万万没想到"));
-        vo.setLove(Lists.newArrayList("花花"));
-        vo.setHate(Lists.newArrayList("大葱","大蒜"));
+        vo.setTag(JSON.parseArray(member.getTag(),String.class));
+        vo.setLove(JSON.parseArray(member.getLove(),String.class));
+        vo.setHate(JSON.parseArray(member.getHate(),String.class));
 
-        this.sendCustomerCount(entityId,face,member);
+        if (flag) {
+            this.sendCustomerCount(entityId,face,member);
+            number++;
+        }
+        vo.setCounter(number);
 
         return vo;
     }
@@ -181,6 +173,6 @@ public class FaceSearchServer {
             count.setCount(member,face);
         }
 
-        messageSending.convertAndSend("/customer/count", new ResultMap<>(new CountVo()));
+        messageSending.convertAndSend("/customer/count", new ResultMap<>(count));
     }
 }

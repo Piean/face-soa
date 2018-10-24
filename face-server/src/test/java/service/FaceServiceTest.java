@@ -45,14 +45,14 @@ public class FaceServiceTest {
     @Test
     public void createFaceTest() {
         String faceId = StringUtil.getUUID();
-        Path path = Paths.get("C:\\Projects\\face-soa\\face-server\\src\\main\\resources\\image\\酥糖-13758270401.jpeg");
+        Path path = Paths.get("C:\\Projects\\face-soa\\face-server\\src\\main\\resources\\image\\桑果-18768167804.jpeg");
         String faceToken = faceHttpClient.addFace(groupId, path, faceId);
-        TwodfireMember dfireMember = twodfireMemberService.queryInfoByMobile("13758270401", "+86").getModel();
+//        TwodfireMember dfireMember = twodfireMemberService.queryInfoByMobile("13758270401", "+86").getModel();
         Face face = new Face();
         face.setId(faceId);
         face.setGroupId(groupId);
-        face.setSex(dfireMember.getSex());
-        face.setAge(21);
+        face.setSex(Face.Sex.MAN.getId());
+        face.setAge(24);
         face.setArriveTime(System.currentTimeMillis());
         face.setFaceToken(faceToken);
         face.setFaceUrl(Base64Code.encodeImage(path));
@@ -60,14 +60,14 @@ public class FaceServiceTest {
 
         Member member = new Member();
         member.setId(StringUtil.getUUID());
-        member.setMemberId(dfireMember.getId());
+        member.setMemberId("");
         member.setFaceId(faceId);
-        member.setName(dfireMember.getName());
-        member.setPhone(dfireMember.getMobile());
-        member.setMemberType(Member.MemberType.MEMBER.getId());
-        member.setTag(JSON.toJSONString(Lists.newArrayList("成功人士","懂生活")));
-        member.setLove(JSON.toJSONString(Lists.newArrayList("爱吃辣")));
-        member.setHate(JSON.toJSONString(Lists.newArrayList("不吃香菜")));
+        member.setName("");
+        member.setPhone("");
+        member.setMemberType(Member.MemberType.FIRST.getId());
+        member.setTag(JSON.toJSONString(Lists.newArrayList()));
+        member.setLove(JSON.toJSONString(Lists.newArrayList()));
+        member.setHate(JSON.toJSONString(Lists.newArrayList()));
         memberService.insertMember(member);
 
         System.out.println(false);

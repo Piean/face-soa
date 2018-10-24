@@ -210,7 +210,8 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
                     new BasicNameValuePair("access_token", this.getAccessToken()),
                     new BasicNameValuePair("image", faceToken),
                     new BasicNameValuePair("image_type", ApiConstants.IMAGE_TYPE_FACETOKEN),
-                    new BasicNameValuePair("group_id_list", groupId)
+                    new BasicNameValuePair("group_id_list", groupId),
+                    new BasicNameValuePair("quality_control", ApiConstants.BAIDU_HIGH)
             ), ApiConstants.API_ENCODE));
 
             System.out.println("Search face " + faceToken + " in group " + groupId);

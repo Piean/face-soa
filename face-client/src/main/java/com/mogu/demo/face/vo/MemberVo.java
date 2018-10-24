@@ -10,6 +10,7 @@ import java.util.List;
 public class MemberVo implements Serializable {
     private static final long serialVersionUID = 110L;
 
+    private String id;
     private String memberId;
     private String faceCode;
     private int sex;
@@ -24,6 +25,14 @@ public class MemberVo implements Serializable {
     private List<String> tag;
     private List<String> love;
     private List<String> hate;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getMemberId() {
         return memberId;

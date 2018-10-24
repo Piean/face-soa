@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 /**
  * Created by mogu
@@ -23,5 +24,10 @@ public class FaceServerConfig extends AbstractWebSocketMessageBrokerConfigurer {
         registry.enableSimpleBroker("/queue", "/topic", "/face", "/member", "/shop", "/customer");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        registry.setMessageSizeLimit(2 * 1024 * 1024);
     }
 }
