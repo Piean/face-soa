@@ -16,4 +16,13 @@ public class Base64Code {
         }
         return "";
     }
+
+    public static String encodeFile(Path path) {
+        try {
+            return Base64.getEncoder().encodeToString(Files.readAllBytes(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

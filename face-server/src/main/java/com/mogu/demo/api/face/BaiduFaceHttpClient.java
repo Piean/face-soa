@@ -2,11 +2,9 @@ package com.mogu.demo.api.face;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
-import com.mogu.demo.baidu.http.FaceDetectResult;
-import com.mogu.demo.baidu.http.FaceSearchResult;
-import com.mogu.demo.baidu.http.GroupAddResult;
-import com.mogu.demo.baidu.http.TokenResult;
+import com.mogu.demo.baidu.http.*;
 import com.mogu.demo.face.bo.Group;
 import com.mogu.demo.service.IGroupService;
 import com.mogu.demo.utils.Base64Code;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * Created by mogu
@@ -36,13 +35,13 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
     private static String token = null;
 
     @Override
-    public FaceDetectResult detect(Path path) {
+    public HttpResult<FaceDetectResult> detect(Path path) {
         HttpPost httpPost = new HttpPost("https://aip.baidubce.com/rest/2.0/face/v3/detect");
         try {
             httpPost.addHeader("Content-Type","application/json");
             httpPost.setEntity(new UrlEncodedFormEntity(Lists.newArrayList(
                     new BasicNameValuePair("access_token", this.getAccessToken()),
-                    new BasicNameValuePair("image", Base64Code.encodeImage(path)),
+                    new BasicNameValuePair("image", Base64Code.encodeFile(path)),
                     new BasicNameValuePair("image_type", ApiConstants.IMAGE_TYPE_BASE64),
                     new BasicNameValuePair("face_field", ApiConstants.BAIDU_DETECT_FILED)
             ), ApiConstants.API_ENCODE));
@@ -50,7 +49,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
             try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
-                    return JSON.parseObject(result, FaceDetectResult.class);
+                    return JSON.parseObject(result, new TypeReference<HttpResult<FaceDetectResult>>(){});
                 }
             }
         } catch (IOException e) {
@@ -60,7 +59,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
     }
 
     @Override
-    public FaceDetectResult detect(String faceToken) {
+    public HttpResult<FaceDetectResult> detect(String faceToken) {
         HttpPost httpPost = new HttpPost("https://aip.baidubce.com/rest/2.0/face/v3/detect");
         try {
             httpPost.addHeader("Content-Type","application/json");
@@ -74,7 +73,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
             try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
-                    return JSON.parseObject(result, FaceDetectResult.class);
+                    return JSON.parseObject(result, new TypeReference<HttpResult<FaceDetectResult>>(){});
                 }
             }
         } catch (IOException e) {
@@ -86,6 +85,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
     @Override
     public String addFace(String groupId, String faceToken, String bizId) {
         HttpPost httpPost = new HttpPost("https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add");
+//        HttpPost httpPost = new HttpPost("https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/update");
         try {
             httpPost.addHeader("Content-Type","application/json");
             httpPost.setEntity(new UrlEncodedFormEntity(Lists.newArrayList(
@@ -116,7 +116,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
             httpPost.setEntity(new UrlEncodedFormEntity(Lists.newArrayList(
                     new BasicNameValuePair("access_token", this.getAccessToken()),
                     new BasicNameValuePair("group_id", groupId),
-                    new BasicNameValuePair("image", Base64Code.encodeImage(path)),
+                    new BasicNameValuePair("image", Base64Code.encodeFile(path)),
                     new BasicNameValuePair("image_type", ApiConstants.IMAGE_TYPE_BASE64),
                     new BasicNameValuePair("user_id", bizId)
             ), ApiConstants.API_ENCODE));
@@ -163,8 +163,7 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
             try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
-                    GroupAddResult groupResult = JSON.parseObject(result, GroupAddResult.class);
-                    if (GroupAddResult.SUCCESS == groupResult.getError_code()) {
+                    if (Objects.equals(HttpResult.SUCCESS,JSONPath.read(result,"$.error_code"))) {
                         groupService.createGroup(create);
                         return groupId;
                     }
@@ -177,7 +176,33 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
     }
 
     @Override
-    public FaceSearchResult search(String entityId, String faceToken) {
+    public boolean delete(String groupId, String userId, String faceToken) {
+        HttpPost httpPost = new HttpPost("https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/delete");
+        try {
+            httpPost.addHeader("Content-Type","application/json");
+            httpPost.setEntity(new UrlEncodedFormEntity(Lists.newArrayList(
+                    new BasicNameValuePair("access_token", this.getAccessToken()),
+                    new BasicNameValuePair("group_id", groupId),
+                    new BasicNameValuePair("user_id", userId),
+                    new BasicNameValuePair("face_token", faceToken)
+            ), ApiConstants.API_ENCODE));
+
+            try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
+                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
+                    if (Objects.equals(HttpResult.SUCCESS,JSONPath.read(result,"$.error_code"))) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public HttpResult<FaceSearchResult> search(String groupId, String faceToken) {
         HttpPost httpPost = new HttpPost("https://aip.baidubce.com/rest/2.0/face/v3/search");
         try {
             httpPost.addHeader("Content-Type","application/json");
@@ -185,15 +210,15 @@ public class BaiduFaceHttpClient implements IFaceHttpClient {
                     new BasicNameValuePair("access_token", this.getAccessToken()),
                     new BasicNameValuePair("image", faceToken),
                     new BasicNameValuePair("image_type", ApiConstants.IMAGE_TYPE_FACETOKEN),
-                    new BasicNameValuePair("group_id_list", this.getGroupId(entityId,null))
+                    new BasicNameValuePair("group_id_list", groupId)
             ), ApiConstants.API_ENCODE));
 
-            System.out.println("Search face " + faceToken + " in group of " + entityId);
+            System.out.println("Search face " + faceToken + " in group " + groupId);
 
             try (CloseableHttpResponse response = ApiConstants.HTTPCLIENT.execute(httpPost)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String result = EntityUtils.toString(response.getEntity(), ApiConstants.API_ENCODE);
-                    return JSON.parseObject(result, FaceSearchResult.class);
+                    return JSON.parseObject(result, new TypeReference<HttpResult<FaceSearchResult>>(){});
                 }
             }
         } catch (IOException e) {

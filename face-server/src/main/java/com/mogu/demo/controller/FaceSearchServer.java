@@ -101,9 +101,10 @@ public class FaceSearchServer {
     private synchronized MemberVo searchAndAdd(String entityId, FaceDetectResult.FaceInfo faceInfo) {
         final MemberVo vo = new MemberVo();
 
-        FaceSearchResult searchResult = faceHttpClient.search(entityId, faceInfo.getFace_token());
-
         final String groupId = groupService.getByEntityId(entityId).getId();
+
+        FaceSearchResult searchResult = faceHttpClient.search(groupId, faceInfo.getFace_token());
+
         String faceId;
         String faceToken;
 

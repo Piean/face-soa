@@ -105,8 +105,8 @@ public class MemberVo implements Serializable {
         this.arriveTime = arriveTime;
     }
 
-    public String getCounter() {
-        return "今日第" + counter + "位顾客";
+    public int getCounter() {
+        return counter;
     }
 
     public void setCounter(int counter) {

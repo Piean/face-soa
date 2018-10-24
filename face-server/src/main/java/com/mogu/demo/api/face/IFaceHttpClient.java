@@ -17,5 +17,7 @@ public interface IFaceHttpClient {
 
     String getGroupId(String entityId, String groupName);
 
-    <T> T search(String entityId, String faceToken);
+    <T> T search(String groupId, String faceToken);
+
+    boolean delete(String groupId, String userId, String faceToken);
 }

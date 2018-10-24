@@ -17,7 +17,7 @@ public class ApiConstants {
     public static final String IMAGE_TYPE_BASE64 = "BASE64";
     public static final String IMAGE_TYPE_FACETOKEN = "FACE_TOKEN";
 
-    public static final String BAIDU_DETECT_FILED = "face_token,age,type,beauty,face_probability";
+    public static final String BAIDU_DETECT_FILED = "face_token,age,gender,beauty,face_probability";
     public static final String BAIDU_GRANT_TYPE = "client_credentials";
 
     public static final String BAIDU_APP_ID = "14475594";
